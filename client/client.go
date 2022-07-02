@@ -63,13 +63,13 @@ func main() {
 	var err error
 	client, err = wgctrl.New()
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 	defer client.Close()
 
 	device, err := client.Device(intfName)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 
 	var registry wgtypes.Peer
@@ -81,7 +81,7 @@ func main() {
 	}
 
 	if registry.AllowedIPs == nil {
-		log.Panic("No valid peer is found")
+		log.Fatalf("No matching peer found for %s.", regPubkey)
 	}
 
 	regAddr := &net.UDPAddr{
