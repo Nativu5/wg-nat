@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Nativu5/wg-nat/server/utils"
@@ -10,28 +11,36 @@ import (
 
 func KeepAliveHandler(ctx *gin.Context) {
 	pubkey := ctx.Query("pubkey")
-	if pubkey == "" {
-		ctx.JSON(http.StatusBadRequest, nil)
+
+	device, err := utils.Client.Device(utils.IntfName)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+		log.Println(err)
 		return
 	}
 
-	// 似无意义
-	var peer wgtypes.Peer
-	for _, v := range utils.Device.Peers {
+	var sender wgtypes.Peer
+	newPeerConfig := make([]wgtypes.PeerConfig, 0, len(device.Peers))
+	for _, v := range device.Peers {
 		if v.PublicKey.String() == pubkey {
-			peer = v
-			break
+			// skip keepalive sender's config
+			sender = v
+			continue
 		}
-	}
-	if peer.Endpoint == nil {
-		ctx.JSON(http.StatusBadRequest, nil)
-		return
-	}
-
-	newPeerConfig := make([]wgtypes.PeerConfig, 0, len(utils.Device.Peers))
-	for _, v := range utils.Device.Peers {
+		if v.Endpoint == nil {
+			// skip unknown endpoint
+			continue
+		}
 		newPeerConfig = append(newPeerConfig, utils.GeneratePeerConfig(v))
 	}
 
+	if sender.Endpoint == nil {
+		// no matching peer found
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Printf("No matching peer found for %s", pubkey)
+		return
+	}
+
+	log.Printf("New endpoint of peer %s is %s", pubkey, sender.Endpoint.String())
 	ctx.JSON(http.StatusOK, newPeerConfig)
 }
