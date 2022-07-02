@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"time"
 
 	"golang.zx2c4.com/wireguard/wgctrl"
@@ -21,11 +22,11 @@ var (
 	timeIntv  time.Duration
 )
 
-func KeepAlive(registry *net.UDPAddr, intfPubkey string) error {
-	url := "http://" + registry.String() + "/keepalive"
-	param := "?pubkey=" + intfPubkey
+func KeepAlive(registry *net.UDPAddr, selfPubkey string) error {
+	target := "http://" + registry.String() + "/keepalive"
+	param := "?pubkey=" + url.QueryEscape(selfPubkey)
 
-	resp, err := http.Post(url+param, "text/plain", nil)
+	resp, err := http.Post(target+param, "text/plain", nil)
 	if err != nil {
 		return err
 	}
