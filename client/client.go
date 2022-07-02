@@ -16,8 +16,9 @@ import (
 
 var (
 	client    *wgctrl.Client
-	intfName  *string
-	regPubkey *string
+	intfName  string
+	regPubkey string
+	timeIntv  time.Duration
 )
 
 func KeepAlive(registry *net.UDPAddr, intfPubkey string) error {
@@ -44,19 +45,16 @@ func KeepAlive(registry *net.UDPAddr, intfPubkey string) error {
 		return err
 	}
 
-	if err := client.ConfigureDevice(*intfName, wgtypes.Config{
-		ReplacePeers: true,
+	return client.ConfigureDevice(intfName, wgtypes.Config{
+		ReplacePeers: false,
 		Peers:        newPeerConfig,
-	}); err != nil {
-		return err
-	}
-
-	return nil
+	})
 }
 
 func main() {
-	intfName = flag.String("interface", "wg0", "Interface name to use")
-	regPubkey = flag.String("registry", "", "Registry public key")
+	flag.StringVar(&intfName, "i", "wg0", "Interface name to use.")
+	flag.StringVar(&regPubkey, "r", "", "Registry public key.")
+	flag.DurationVar(&timeIntv, "t", time.Second*60, "Time interval to send keepalive.")
 	flag.Parse()
 
 	log.Println("Hello, World!")
@@ -68,14 +66,14 @@ func main() {
 	}
 	defer client.Close()
 
-	device, err := client.Device(*intfName)
+	device, err := client.Device(intfName)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	var registry wgtypes.Peer
 	for _, v := range device.Peers {
-		if v.PublicKey.String() == *regPubkey {
+		if v.PublicKey.String() == regPubkey {
 			registry = v
 			break
 		}
@@ -90,10 +88,15 @@ func main() {
 		Port: registry.Endpoint.Port,
 	}
 
-	ticker := time.NewTicker(60 * time.Second)
+	ticker := time.NewTicker(timeIntv)
 	defer ticker.Stop()
 
 	for range ticker.C {
-		KeepAlive(regAddr, device.PublicKey.String())
+		log.Println("Sending keepalive to registry...")
+		if err := KeepAlive(regAddr, device.PublicKey.String()); err != nil {
+			log.Println(err)
+		} else {
+			log.Println("Peers update successfully.")
+		}
 	}
 }
