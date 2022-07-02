@@ -1,1 +1,9 @@
+# ignore all files without extension
+*
+!*.*
+!*/
+
+# specific rules
 .vscode
+.test
+*.exe
