@@ -21,15 +21,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// trustedAddrs, err := utils.GetWgAddrs()
-	// if err != nil {
-	// 	log.Printf("Fail to get address of %s: %v", utils.IntfName, err)
-	// }
+	localIP, err := utils.GetWgLocalIP()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	// r.SetTrustedProxies(trustedAddrs)
+	r.SetTrustedProxies(nil)
 	r.POST("/keepalive", handlers.KeepAliveHandler)
 
-	r.Run(fmt.Sprintf("0.0.0.0:%d", device.ListenPort))
+	r.Run(fmt.Sprintf("%s:%d", localIP, device.ListenPort))
 }

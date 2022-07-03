@@ -2,6 +2,7 @@ package utils
 
 import (
 	"flag"
+	"fmt"
 	"net"
 
 	"golang.zx2c4.com/wireguard/wgctrl"
@@ -37,7 +38,7 @@ func GeneratePeerConfig(peer wgtypes.Peer) wgtypes.PeerConfig {
 	}
 }
 
-func GetWgAddrs() ([]string, error) {
+func GetWgCIDR() ([]string, error) {
 	wgIntf, err := net.InterfaceByName(IntfName)
 	if err != nil {
 		return nil, err
@@ -49,6 +50,21 @@ func GetWgAddrs() ([]string, error) {
 		addrs = append(addrs, v.String())
 	}
 	return addrs, nil
+}
+
+func GetWgLocalIP() (string, error) {
+	wgIntf, err := net.InterfaceByName(IntfName)
+	if err != nil {
+		return "", err
+	}
+
+	wgAddrs, _ := wgIntf.Addrs()
+	for _, v := range wgAddrs {
+		if v.(*net.IPNet).IP != nil {
+			return v.(*net.IPNet).IP.String(), nil
+		}
+	}
+	return "", fmt.Errorf("no valid Local IP found")
 }
 
 func SaveConfigToFile() error {
