@@ -66,7 +66,3 @@ func GetWgLocalIP() (string, error) {
 	}
 	return "", fmt.Errorf("no valid Local IP found")
 }
-
-func SaveConfigToFile() error {
-	return nil
-}
