@@ -58,7 +58,8 @@ func main() {
 	flag.DurationVar(&timeIntv, "t", time.Second*60, "Time interval to send keepalive.")
 	flag.Parse()
 
-	log.Println("Hello, World!")
+	log.Println("Wg-nat Full Mesh Tunnel Generator - Client")
+	log.Printf("Interface: %s | Registry: %s | Update Time Interval: %v", intfName, regPubkey, timeIntv)
 
 	var err error
 	client, err = wgctrl.New()
@@ -89,6 +90,7 @@ func main() {
 		Port: registry.Endpoint.Port,
 	}
 
+	// Set ticker to send keepalive periodically.
 	ticker := time.NewTicker(timeIntv)
 	defer ticker.Stop()
 

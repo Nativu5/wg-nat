@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	log.Println("Wg-nat Full Mesh Tunnel Generator - Registry Server")
+
 	if utils.InitWg() != nil {
 		log.Fatal("Failed to initialize WireGuard.")
 	}
@@ -31,5 +33,6 @@ func main() {
 	r.SetTrustedProxies(nil)
 	r.POST("/keepalive", handlers.KeepAliveHandler)
 
+	// For security, the server should only listen on wg interface's IP.
 	r.Run(fmt.Sprintf("%s:%d", localIP, device.ListenPort))
 }

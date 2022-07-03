@@ -25,7 +25,10 @@ func InitWg() error {
 	return err
 }
 
+// GeneratePeerConfig generates a PeerConfig from a Peer.
 func GeneratePeerConfig(peer wgtypes.Peer) wgtypes.PeerConfig {
+	// Client may add new peers or update existed ones.
+	// However, removal of peers is not supported.
 	return wgtypes.PeerConfig{
 		PublicKey:                   peer.PublicKey,
 		Remove:                      false,
@@ -38,6 +41,7 @@ func GeneratePeerConfig(peer wgtypes.Peer) wgtypes.PeerConfig {
 	}
 }
 
+// GetWgCIDR returns the list of WireGuard interface's CIDR.
 func GetWgCIDR() ([]string, error) {
 	wgIntf, err := net.InterfaceByName(IntfName)
 	if err != nil {
@@ -52,6 +56,7 @@ func GetWgCIDR() ([]string, error) {
 	return addrs, nil
 }
 
+// GetWgLocalIP returns the local IP of WireGuard interface.
 func GetWgLocalIP() (string, error) {
 	wgIntf, err := net.InterfaceByName(IntfName)
 	if err != nil {

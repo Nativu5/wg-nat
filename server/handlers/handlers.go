@@ -9,6 +9,8 @@ import (
 	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
+// KeepAliveHandler handles the keepalive request
+// and reply with known peers' configuration.
 func KeepAliveHandler(ctx *gin.Context) {
 	pubkey := ctx.Query("pubkey")
 
