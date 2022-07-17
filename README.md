@@ -1,3 +1,3 @@
 # wg-nat
 
-wg-nat is a tool helps WireGuard peers behind NAT or firewall to communicate and turns tunnels into a full-mesh network.
+wg-nat is a tool helping WireGuard peers behind NAT or firewall to communicate and turning tunnels into a full-mesh network.
