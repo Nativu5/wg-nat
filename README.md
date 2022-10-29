@@ -2,16 +2,32 @@
 
 wg-nat is a tool helping WireGuard peers behind NAT or firewall to communicate as well as turning tunnels into a full-mesh network.
 
+<p align="middle">
+<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101014.svg" width=40% title="Centralized network" />
+&nbsp; => &nbsp;
+<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101012.svg" width=40% title="Using wg-nat to make full mesh network" />
+</p>
+
+## Concept
+
+The tunnel between the registry server and client (e.g., client A) is guaranteed by persistent keepalives. This application multiplexes the port used by that tunnel so that other clients could use it to directly connect to client A.
+
+The registry server is also responsible for informing other clients about client A's endpoint information.
+
+Inspirations are from: 
+* [WireGuard Endpoint Discovery and NAT Traversal using DNS-SD](https://www.jordanwhited.com/posts/wireguard-endpoint-discovery-nat-traversal/)
+
+* [wireguard-tools nat-hole-punching example](https://git.zx2c4.com/wireguard-tools/tree/contrib/nat-hole-punching)
+
 # Usage 
 
-To utilize this application, a machine with internet access and public IP address is required. A **registry interface** and **server application** are configured on it.
+To utilize this application, a machine with internet access and public IP address is required for **registry**.
 
-Machines behind the firewall or NAT could be configured as clients. A Wireguard interface directly connected with the registry is set and the client application runs on it. 
-
+Machines behind the firewall or NAT could be configured as clients.
 
 ## Initialize Wireguard interfaces
 
-Set up Wireguard interfaces as usual. A registry interface is required, which should contain desired peer configurations. And make sure that the client has a proper configuration to connect with the registry interface.
+Set up Wireguard interfaces as usual. A registry interface is set and make sure that all clients have configurations to connect with the registry interface (as shown in the first figure).
 
 ## Run the Server and Client application
 

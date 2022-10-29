@@ -1,3 +1,5 @@
+# Thanks to https://github.com/Mrs4s/go-cqhttp/blob/master/.github/workflows/ci.yml
+
 name: CI
 
 on: 
@@ -38,11 +40,11 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           if [ $GOOS = "windows" ]; then export BINARY_SUFFIX="$BINARY_SUFFIX.exe"; fi
-          go build -o "output/client_$GOOS_$GOARCH$BINARY_SUFFIX" -trimpath ./client
-          go build -o "output/server_$GOOS_$GOARCH$BINARY_SUFFIX" -trimpath ./server
+          go build -o "output/$BINARY_PREFIXclient_$GOOS_$GOARCH$BINARY_SUFFIX" -trimpath ./client
+          go build -o "output/$BINARY_PREFIXserver_$GOOS_$GOARCH$BINARY_SUFFIX" -trimpath ./server
       
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.goos }}_${{ matrix.goarch }}
+          name: wg-nat_${{ matrix.goos }}_${{ matrix.goarch }}
           path: output/
