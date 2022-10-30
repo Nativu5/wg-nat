@@ -31,6 +31,8 @@ Set up Wireguard interfaces as usual. A registry interface is set and make sure 
 
 ## Run the Server and Client application
 
+To download the newest binaries supporting multiple platforms, check [GitHub Action Artifacts](https://github.com/Nativu5/wg-nat/actions).  
+
 The server application collects endpoint information and distributes that to all clients so that they can connect with each other. 
 
 ```
@@ -57,3 +59,7 @@ Usage of client:
 * `-t` is the time interval for the client to actively communicate with the server. The value should be given in Golang time format.
 
 Run the server and client application with proper arguments. Then the client should be able to connect to other peers directly.
+
+# Security
+
+Be awared that the server should only be accessed within the your WireGuard network. It is very important to set up firewall rules to avoid exposing server on Internet. 
