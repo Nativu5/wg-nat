@@ -3,12 +3,12 @@
 wg-nat is a tool helping WireGuard peers behind NAT or firewall to communicate as well as turning tunnels into a full-mesh network.
 
 <p align="middle">
-<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101014.svg" width=40% title="Centralized network" />
+<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101014.svg" width=45% title="Centralized network" />
 &nbsp; => &nbsp;
-<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101012.svg" width=40% title="Using wg-nat to make full mesh network" />
+<img src="https://raw.githubusercontent.com/Nativu5/nativu5.github.io/main/files/202210291101012.svg" width=45% title="Using wg-nat to make full mesh network" />
 </p>
 
-## Concept
+# Concept
 
 The tunnel between the registry server and client (e.g., client A) is guaranteed by persistent keepalives. This application multiplexes the port used by that tunnel so that other clients could use it to directly connect to client A.
 
